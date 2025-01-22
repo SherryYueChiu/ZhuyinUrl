@@ -21,7 +21,7 @@ function subimt() {
       throw new Error("我吃不出這是什麼網址");
     }
     const translated = base62ToZhuyin(token);
-    const newUrl = `https://zhu-yin-url.vercel.app/?q=${translated}`;
+    const newUrl = `https://url.sherryyue.life/?q=${translated}`;
     Swal.fire({
       title: "來了",
       text: newUrl,
