@@ -18,6 +18,11 @@
   src: url(./assets/Cubic_11_1.100_R.woff2);
 }
 
+body,
+::placeholder {
+  font-family: Cubic;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -33,7 +38,6 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Cubic;
 }
 
 h1 {
