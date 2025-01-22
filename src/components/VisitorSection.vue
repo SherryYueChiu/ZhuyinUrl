@@ -52,7 +52,7 @@ onMounted(() => {
       ref="inputBox"
       type="text"
       v-model="inputValue"
-      placeholder="ㄔㄍㄔㄊㄡㄋㄐ"
+      placeholder="ㄗㄆㄌㄡㄒㄙㄏ"
     />
     <button
       @click="subimt()"

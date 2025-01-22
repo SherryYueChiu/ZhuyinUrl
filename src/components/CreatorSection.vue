@@ -43,7 +43,7 @@ function subimt() {
       ref="inputBox"
       type="text"
       v-model="inputValue"
-      placeholder="https://reurl.cc/ge1mEp"
+      placeholder="https://reurl.cc/oVA9Lg"
     />
     <button
       @click="subimt()"
