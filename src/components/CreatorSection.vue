@@ -13,6 +13,9 @@ function subimt() {
     if (inputValue.value.trim() === "") {
       throw new Error("你是空手來的嗎？");
     } else if (inputValue.value.startsWith("http")) {
+      if (!inputValue.value.includes("reurl.cc")) {
+        throw new Error("現在指認reurl的短網址噢");
+      }
       token = extractTailFromUrl(inputValue.value);
     } else {
       throw new Error("我吃不出這是什麼網址");
