@@ -32,7 +32,8 @@ function subimt() {
 
 function fillInIfUrlTokenExist() {
   try {
-    const token = new URL(location.href).searchParams.get("q");
+    const searchParams = new URL(location.href).searchParams;
+    const token = searchParams.get("q") || searchParams.get("Q");
     if (!token) return;
     inputValue.value = token;
     subimt();
