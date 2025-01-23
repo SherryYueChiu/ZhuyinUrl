@@ -2,33 +2,25 @@
 import { ref } from "vue";
 import Swal from "sweetalert2";
 import copy from "clipboard-copy";
-import { extractTailFromUrl, base62ToZhuyin } from "../service";
 
+const DEFAULT_URL = "";
 const inputBox = ref<HTMLInputElement>();
 const inputValue = ref<string>("");
+const urlPreview = ref<string>("");
 
 function subimt() {
-  let token = "";
   try {
-    if (inputValue.value.trim() === "") {
-      throw new Error("你是空手來的嗎？");
-    } else if (inputValue.value.startsWith("http")) {
-      if (!inputValue.value.includes("reurl.cc")) {
-        throw new Error("現在指認reurl的短網址噢");
-      }
-      token = extractTailFromUrl(inputValue.value);
-    } else {
-      throw new Error("我吃不出這是什麼網址");
-    }
-    const translated = base62ToZhuyin(token);
-    const newUrl = `https://url.sherryyue.life/?q=${translated}`;
-    Swal.fire({
-      title: "來了",
-      text: newUrl,
-      icon: "success",
-      confirmButtonText: "複製",
-    });
-    copy(newUrl);
+    const token = predictZhuyinUrl();
+    if (typeof token === "string") {
+      const newUrl = `https://url.sherryyue.life/?q=${token}`;
+      Swal.fire({
+        title: "來了",
+        text: newUrl,
+        icon: "success",
+        confirmButtonText: "複製",
+      });
+      copy(newUrl);
+    } else throw token;
   } catch (error) {
     Swal.fire({
       title: "遇到狀況了",
@@ -36,6 +28,27 @@ function subimt() {
       icon: "error",
     });
   }
+}
+
+function predictZhuyinUrl() {
+  let token = "";
+  if (inputValue.value.trim() === "") {
+    urlPreview.value = DEFAULT_URL;
+    return new Error("你是空手來的嗎？");
+  } else if (inputValue.value.startsWith("http")) {
+    if (!inputValue.value.includes("reurl.cc")) {
+      urlPreview.value = DEFAULT_URL;
+      return new Error("現在只認reurl的短網址噢");
+    }
+    token = (window as any).extractTailFromUrl(inputValue.value);
+  } else {
+    urlPreview.value = DEFAULT_URL;
+    return new Error("我吃不出這是什麼網址");
+  }
+  const translated = (window as any).base62ToZhuyin(token);
+  const newUrl = `url.sherryyue.life/?q=${translated}`;
+  urlPreview.value = newUrl;
+  return newUrl;
 }
 </script>
 
@@ -47,6 +60,7 @@ function subimt() {
       type="text"
       v-model="inputValue"
       placeholder="https://reurl.cc/oVA9Lg"
+      @input="predictZhuyinUrl"
     />
     <button
       @click="subimt()"
@@ -55,6 +69,7 @@ function subimt() {
     >
       <span>變身</span>
     </button>
+    <a class="preview-url" :href="urlPreview || DEFAULT_URL">{{ urlPreview || DEFAULT_URL }}</a>
   </div>
 </template>
 
@@ -95,5 +110,10 @@ function subimt() {
     background-color: #666;
     cursor: not-allowed;
   }
+}
+
+.input-section .preview-url {
+  color: white;
+  opacity: 0.3;
 }
 </style>

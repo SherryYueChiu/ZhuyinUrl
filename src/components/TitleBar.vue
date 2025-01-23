@@ -2,7 +2,7 @@
 
 <template>
   <header class="title-bar">
-    <h1>ㄅ的注音短網址</h1>
+    <h1>玥餅的注音短網址</h1>
   </header>
 </template>
 

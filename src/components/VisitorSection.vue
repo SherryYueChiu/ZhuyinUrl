@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import Swal from "sweetalert2";
-import { zhuyinToBase62, isValidZhuyin } from "../service";
 
+const DEFAULT_URL = "https://reurl.cc";
 const inputBox = ref<HTMLInputElement>();
 const inputValue = ref<string>("");
+const urlPreview = ref<string>("");
 
 function subimt() {
-  let token = "";
   try {
-    if (inputValue.value.trim() === "") {
-      throw new Error("你是空手來的嗎？");
-    } else if (isValidZhuyin(inputValue.value)) {
-      token = inputValue.value;
-    } else if (inputValue.value.startsWith("http")) {
-      token = new URL(inputValue.value).searchParams.get("q");
-    } else {
-      throw new Error("我吃不出這是什麼網址");
-    }
-    const translated = zhuyinToBase62(token);
-    const newUrl = `https://reurl.cc/${translated}`;
-    location.href = newUrl;
+    const newUrl = predictRealUrl();
+    if (typeof newUrl === "string") location.href = newUrl;
+    else throw newUrl;
   } catch (error) {
     Swal.fire({
       title: "<ruby><rb>蛤</rb><rt>ㄍㄜˊ</rt></ruby>～",
@@ -30,13 +21,31 @@ function subimt() {
   }
 }
 
+function predictRealUrl() {
+  if (!inputValue.value) return;
+  let token = "";
+  if (inputValue.value.trim() === "") {
+    urlPreview.value = DEFAULT_URL;
+    return new Error("你是空手來的嗎？");
+  } else if ((window as any).isValidZhuyin(inputValue.value)) {
+    token = inputValue.value;
+  } else if (inputValue.value.startsWith("http")) {
+    token = (window as any).extractQueryFromUrl(inputValue.value);
+  } else {
+    urlPreview.value = DEFAULT_URL;
+    return new Error("我吃不出這是什麼網址");
+  }
+  const translated = (window as any).zhuyinToBase62(token);
+  const newUrl = `https://reurl.cc/${translated}`;
+  urlPreview.value = newUrl;
+  return newUrl;
+}
+
 function fillInIfUrlTokenExist() {
   try {
-    const searchParams = new URL(location.href).searchParams;
-    const token = searchParams.get("q") || searchParams.get("Q");
+    const token = (window as any).extractQueryFromUrl(location.href);
     if (!token) return;
     inputValue.value = token;
-    subimt();
   } catch (error) {}
 }
 
@@ -54,6 +63,7 @@ onMounted(() => {
       type="text"
       v-model="inputValue"
       placeholder="ㄗㄆㄌㄡㄒㄙㄏ"
+      @input="predictRealUrl"
     />
     <button
       @click="subimt()"
@@ -62,6 +72,9 @@ onMounted(() => {
     >
       <span>前往</span>
     </button>
+    <a class="preview-url" :href="urlPreview || DEFAULT_URL">{{
+      urlPreview || DEFAULT_URL
+    }}</a>
   </div>
 </template>
 
@@ -102,5 +115,9 @@ onMounted(() => {
     background-color: #666;
     cursor: not-allowed;
   }
+}
+
+.input-section .preview-url {
+  color: white;
 }
 </style>
