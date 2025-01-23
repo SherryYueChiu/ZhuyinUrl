@@ -101,6 +101,20 @@ function extractQueryFromUrl(url) {
     return token;
 }
 
+// export
+window.base62ToIndex = base62ToIndex;
+window.base62ToDecimal = base62ToDecimal;
+window.decimalToZhuyin = decimalToZhuyin;
+window.zhuyinToIndex = zhuyinToIndex;
+window.zhuyinToDecimal = zhuyinToDecimal;
+window.decimalToBase62 = decimalToBase62;
+window.zhuyinToBase62 = zhuyinToBase62;
+window.base62ToZhuyin = base62ToZhuyin;
+window.isValidZhuyin = isValidZhuyin;
+window.zhuyinToUrl = zhuyinToUrl;
+window.extractTailFromUrl = extractTailFromUrl;
+window.extractQueryFromUrl = extractQueryFromUrl;
+
 // auto redirect on page load
 try {
     const token = extractQueryFromUrl(location.href);

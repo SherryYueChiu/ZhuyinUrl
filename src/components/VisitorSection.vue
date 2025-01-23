@@ -22,23 +22,25 @@ function subimt() {
 }
 
 function predictRealUrl() {
-  if (!inputValue.value) return;
-  let token = "";
-  if (inputValue.value.trim() === "") {
+    let token = "";
     urlPreview.value = DEFAULT_URL;
-    return new Error("你是空手來的嗎？");
-  } else if ((window as any).isValidZhuyin(inputValue.value)) {
-    token = inputValue.value;
-  } else if (inputValue.value.startsWith("http")) {
-    token = (window as any).extractQueryFromUrl(inputValue.value);
-  } else {
-    urlPreview.value = DEFAULT_URL;
-    return new Error("我吃不出這是什麼網址");
+  try {
+    if (inputValue.value.trim() === "") {
+      return new Error("你是空手來的嗎？");
+    } else if ((window as any).isValidZhuyin(inputValue.value)) {
+      token = inputValue.value;
+    } else if (inputValue.value.startsWith("http")) {
+      token = (window as any).extractQueryFromUrl(inputValue.value);
+    } else {
+      return new Error("我吃不出這是什麼網址");
+    }
+    const translated = (window as any).zhuyinToBase62(token);
+    const newUrl = `https://reurl.cc/${translated}`;
+    urlPreview.value = newUrl;
+    return newUrl;
+  } catch (error) {
+    return new Error(error.message);
   }
-  const translated = (window as any).zhuyinToBase62(token);
-  const newUrl = `https://reurl.cc/${translated}`;
-  urlPreview.value = newUrl;
-  return newUrl;
 }
 
 function fillInIfUrlTokenExist() {

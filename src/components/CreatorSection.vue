@@ -10,9 +10,8 @@ const urlPreview = ref<string>("");
 
 function subimt() {
   try {
-    const token = predictZhuyinUrl();
-    if (typeof token === "string") {
-      const newUrl = `https://url.sherryyue.life/?q=${token}`;
+    const newUrl = predictZhuyinUrl();
+    if (typeof newUrl === "string") {
       Swal.fire({
         title: "來了",
         text: newUrl,
@@ -20,7 +19,7 @@ function subimt() {
         confirmButtonText: "複製",
       });
       copy(newUrl);
-    } else throw token;
+    } else throw newUrl;
   } catch (error) {
     Swal.fire({
       title: "遇到狀況了",
@@ -32,23 +31,25 @@ function subimt() {
 
 function predictZhuyinUrl() {
   let token = "";
-  if (inputValue.value.trim() === "") {
-    urlPreview.value = DEFAULT_URL;
-    return new Error("你是空手來的嗎？");
-  } else if (inputValue.value.startsWith("http")) {
-    if (!inputValue.value.includes("reurl.cc")) {
-      urlPreview.value = DEFAULT_URL;
-      return new Error("現在只認reurl的短網址噢");
+  urlPreview.value = DEFAULT_URL;
+  try {
+    if (inputValue.value.trim() === "") {
+      return new Error("你是空手來的嗎？");
+    } else if (inputValue.value.startsWith("http")) {
+      if (!inputValue.value.includes("reurl.cc")) {
+        return new Error("現在只認reurl的短網址噢");
+      }
+      token = (window as any).extractTailFromUrl(inputValue.value);
+    } else {
+      return new Error("我吃不出這是什麼網址");
     }
-    token = (window as any).extractTailFromUrl(inputValue.value);
-  } else {
-    urlPreview.value = DEFAULT_URL;
-    return new Error("我吃不出這是什麼網址");
+    const translated = (window as any).base62ToZhuyin(token);
+    const newUrl = `http://url.sherryyue.life/?q=${translated}`;
+    urlPreview.value = newUrl;
+    return newUrl;
+  } catch (error) {
+    return new Error(error.message);
   }
-  const translated = (window as any).base62ToZhuyin(token);
-  const newUrl = `url.sherryyue.life/?q=${translated}`;
-  urlPreview.value = newUrl;
-  return newUrl;
 }
 </script>
 
@@ -69,7 +70,9 @@ function predictZhuyinUrl() {
     >
       <span>變身</span>
     </button>
-    <a class="preview-url" :href="urlPreview || DEFAULT_URL">{{ urlPreview || DEFAULT_URL }}</a>
+    <a class="preview-url" :href="urlPreview || DEFAULT_URL">{{
+      urlPreview || DEFAULT_URL
+    }}</a>
   </div>
 </template>
 
