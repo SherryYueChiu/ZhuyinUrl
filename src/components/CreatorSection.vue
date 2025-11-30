@@ -44,7 +44,7 @@ function predictZhuyinUrl() {
       return new Error("我吃不出這是什麼網址");
     }
     const translated = (window as any).base62ToZhuyin(token);
-    const newUrl = `http://url.sherryyue.life/?q=${translated}`;
+    const newUrl = `http://zhuyin-url.vercel.app/?q=${translated}`;
     urlPreview.value = newUrl;
     return newUrl;
   } catch (error) {
