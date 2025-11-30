@@ -1,5 +1,129 @@
-# Vue 3 + TypeScript + Vite
+# 注音短網址轉換器 (ZhuyinUrl)
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 📖 專案簡介
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+考慮到台灣人英文發音不標準，並有很多人看見羅馬字就頭痛，這個專案使用**七碼注音**來轉譯來自 [reurl.cc](https://reurl.cc) 的短網址，讓短網址更容易被台灣人理解和分享。
+
+## 🎯 專案動機
+
+傳統的短網址服務（如 reurl.cc）使用 Base62 編碼（包含數字、大小寫英文字母），對於不熟悉英文發音的台灣使用者來說：
+- 難以正確讀出網址
+- 容易輸入錯誤
+- 分享時容易產生誤解
+
+本專案將 Base62 編碼轉換為注音符號，讓短網址變得：
+- ✅ 更容易讀出
+- ✅ 更容易記憶
+- ✅ 更符合台灣使用者的習慣
+
+## ✨ 功能特色
+
+### 1. 製作注音短網址
+將 reurl.cc 的短網址轉換為注音版本：
+- 輸入：`https://reurl.cc/QVZDN9`
+- 輸出：`http://zhuyin-url.vercel.app/?q=ㄎㄖㄍㄏㄙㄧㄏ`
+
+### 2. 解析注音短網址
+將注音短網址轉換回原始 reurl.cc 網址：
+- 輸入：`ㄗㄆㄌㄡㄒㄙㄏ` 或完整網址
+- 自動跳轉到對應的 reurl.cc 短網址
+
+### 3. 自動重定向
+當使用者訪問包含注音參數的網址時，會自動重定向到對應的 reurl.cc 短網址。
+
+## 🛠️ 技術棧
+
+- **前端框架**: Vue 3 (Composition API)
+- **語言**: TypeScript
+- **建置工具**: Vite
+- **樣式**: CSS (Scoped Styles)
+- **UI 元件**: SweetAlert2
+- **工具函式**: 自定義 Base62 ↔ 注音轉換演算法
+
+## 📦 安裝與執行
+
+### 前置需求
+- Node.js (建議 v16 以上)
+- npm 或 yarn
+
+### 安裝依賴
+```bash
+npm install
+```
+
+### 開發模式
+```bash
+npm run dev
+```
+
+### 建置生產版本
+```bash
+npm run build
+```
+
+### 預覽生產版本
+```bash
+npm run preview
+```
+
+## 🔧 轉換原理
+
+本專案使用 Base62 與注音符號之間的雙向轉換：
+
+1. **Base62 編碼**: 使用 62 個字元（0-9, A-Z, a-z）
+2. **注音符號**: 使用 37 個注音符號（21 個聲母 + 16 個韻母）
+3. **轉換方式**:
+   - Base62 (6 碼) → 十進位數字 → 注音 (7 碼)
+   - 注音 (7 碼) → 十進位數字 → Base62 (6 碼)
+
+### 注音符號對照表
+- **聲母**: ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙ
+- **韻母**: ㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ
+
+## 📁 專案結構
+
+```
+ZhuyinUrl/
+├── public/
+│   ├── util.js          # 核心轉換邏輯
+│   └── images/          # 靜態資源
+├── src/
+│   ├── components/
+│   │   ├── CreatorSection.vue    # 製作短網址區塊
+│   │   ├── VisitorSection.vue    # 解析短網址區塊
+│   │   └── TitleBar.vue          # 標題列
+│   ├── App.vue          # 主應用程式
+│   └── main.ts          # 入口檔案
+├── package.json
+└── README.md
+```
+
+## 🚀 使用範例
+
+### 製作注音短網址
+1. 在「製作短網址」區塊輸入 reurl.cc 的短網址
+2. 系統會自動預覽轉換後的注音網址
+3. 點擊「變身」按鈕，系統會複製注音網址到剪貼簿
+
+### 解析注音短網址
+1. 在「解析短網址」區塊輸入注音符號（如：`ㄗㄆㄌㄡㄒㄙㄏ`）
+2. 或直接貼上完整的注音網址
+3. 點擊「前往」按鈕，系統會自動跳轉到對應的 reurl.cc 短網址
+
+## 📝 注意事項
+
+- 目前僅支援 reurl.cc 的短網址轉換
+- 輸入的網址必須以 `http://` 或 `https://` 開頭
+- 注音符號必須是有效的 37 個注音符號之一
+
+## 📄 授權
+
+本專案為開源專案，歡迎自由使用與修改。
+
+## 🤝 貢獻
+
+歡迎提交 Issue 或 Pull Request 來改善這個專案！
+
+---
+
+**讓短網址更友善，讓分享更簡單！** 🎉
